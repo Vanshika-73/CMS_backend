@@ -26,12 +26,12 @@ const Complaint_schema = mongoose.Schema({
         },
         wing:{
             type: String,
-            enum:['Civil','Electrical'],
+            enum:['Civil','Electrical','Horticulture','Sanitation'],
             required:true,
         },
         wing_branch:{
             type:String,
-            emu:["Plumbing","Masonry","Carpentry","Electricity","Ac","Ro","Painting","Welding"],
+            emu:["Plumbing","Masonry","Carpentry","Painting","Welding","Any Other","Internal","External"],
             required:true,
         },
         Date_time:{
