@@ -49,10 +49,6 @@ const Complaint_schema = mongoose.Schema({
         contact:{
             type:Number,
             required:true
-        },
-        assign_to:{
-            type:String,
-            default:"Not Assigned"
         }
 })
 const Complaint_model=new mongoose.model('Complaint', Complaint_schema);

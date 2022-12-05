@@ -7,7 +7,6 @@ const Users_schema = mongoose.Schema({
     },
     user_img:{
         type:String,
-        // unique:true,
     },
     user_designation:{
         type:String,
