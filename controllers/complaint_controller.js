@@ -13,7 +13,6 @@ async function getComplaints(req, res) {
 }
 
 async function getComplaint(req, res) {
-  res.send("helloooo");
   try {
     let name = req.users.username;
     let { username } = req.params;
