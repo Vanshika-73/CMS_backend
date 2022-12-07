@@ -3,7 +3,7 @@ import express  from "express";
 
 const router =express.Router();
 router.get("/",getComplaints);
-router.post("/complaint",getComplaint);
+router.get("/complaint",getComplaint);
 router.post("/",createComplaint);
 router.put("/:cno",updateComplaint);
 router.delete("/:_id",deleteComplaint);
