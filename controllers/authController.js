@@ -11,9 +11,9 @@ async function authController(req, res) {
     else{
       // res.send(user);
       // if(token){
-        // const com=await bcrypt.compare(pass,user.user_password);
+        const com =await bcrypt.compare(pass,user.user_password);
 
-        if(user.user_password==pass){
+        if(com){
           let token= jwt.sign({user},process.env.secret_key);
           res.status(200).json(token)
           console.log(token,"fgs");
