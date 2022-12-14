@@ -4,6 +4,7 @@ const Users_schema = mongoose.Schema({
     username:{
         type:String,
         required:true,
+        unique:true
     },
     user_img:{
         type:String,
@@ -18,15 +19,13 @@ const Users_schema = mongoose.Schema({
         enum:['Civil','Electrical','Horticulture','Sanitation'],
     },
     user_contact:{
-        type:Number,
+        type:String,
         min:10,
-        unique:true,
         required:true,
     },
     user_email:{
         type:String,
-        required:true,
-        unique:true,
+        required:true
     },
     user_password:{
         type:String,
