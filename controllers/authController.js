@@ -3,10 +3,13 @@ import bcrypt from "bcrypt";
 import Users_model from "../models/user.js";
 import { json } from "express";
 async function authController(req, res) {
+
     try {
         let userName = req.body.username;
         let pass = req.body.user_password;
+        console.log(userName);
     let user =await Users_model.findOne({ username: userName});
+    console.log(user, "user");
     if (!user) res.send("user not found");
     else{
       // res.send(user);
@@ -15,10 +18,12 @@ async function authController(req, res) {
 
         if(com){
           let token= jwt.sign({user},process.env.secret_key);
-          res.status(200).json(token)
+          res.status(200).json({token:token,username:user.username, designation:user.user_designation,user:user,dept:user.dept})
           console.log(token,"fgs");
           }
-          else res.send("Invalid password");
+          else {
+            res.status(401).send('invalid Password')
+          };
         }
     // }
   } catch (error) {

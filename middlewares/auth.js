@@ -3,6 +3,7 @@ import Users_model from '../models/user.js';
 // import dotenv from 'dotenv';
 async function auth(req,res,next){
     try{
+        console.log(req)
         let token=await req.headers.authorization?.split(" ")[1];
         if(!token) res.send("you are not authorized");
         let verify=jwt.verify(token,process.env.secret_key);

@@ -12,7 +12,7 @@ const Users_schema = mongoose.Schema({
     user_designation:{
         type:String,
         required:true,
-        enum:["Engineer","Technician","Supervisor","Manager","Professor"],
+        enum:["Supervisor","Manager","Professor"],
     },
     dept:{
         type:String,

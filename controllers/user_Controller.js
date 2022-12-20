@@ -1,5 +1,14 @@
 import Users_model from '../models/user.js';
-import bcrypt from "bcrypt"
+import bcrypt from "bcrypt";
+import dotenv from 'dotenv';
+import nodemailer from 'nodemailer';
+let transporter = nodemailer.createTransport({
+  service:'gmail',
+  auth:{
+    user:process.env.EMAIL_TEST,
+    pass:process.env.EMAIL_TEST_APP_PSWD
+  }
+});
 async function getUsers(req, res) {
   try {
     let data2 = await Users_model.find();
@@ -35,6 +44,7 @@ async function getUser(req, res) {
 
 
 async function createUser(req, res) {
+
   try {
     let username = req.body.username
     let user_designation = req.body.user_designation
@@ -56,8 +66,25 @@ async function createUser(req, res) {
           payLoad = { ...req.body, user_password: hash }
           console.log(payLoad);
           let data2 = await Users_model.create(payLoad);
+          var mailOptions = {
+            from: 'vanshikabansal73@gmail.com',
+            to:req.body.user_email,
+            subject:'Your login details',
+            text:`Your login details for Campus Management System are as follows:: Username:${username} and password : ${Userpassword}`
+          }
+          // if(data2)
+          // {
+              
+          // }
+          transporter.sendMail(mailOptions,function(error,info){
+            if(error){
+              console.log(error.message);
+            }
+            else{
+              console.log('email sent: ',info.response);
+            }
+          })
           res.status(200).json({ user: data2 });
-
 
         }
       });

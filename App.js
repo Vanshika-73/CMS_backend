@@ -11,7 +11,7 @@ Connect_db();
 App.use(express.json());
 App.use(cors());
 App.use("/users",user_routes);
-App.use("/complaints",auth, complaint_routes);
+App.use("/complaints", complaint_routes);
 App.use("/users",authController);
 const port =process.env.PORT;
 App.listen(port,()=>console.log(`server is running on port ${port}`));
