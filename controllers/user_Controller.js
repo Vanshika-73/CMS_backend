@@ -47,8 +47,8 @@ async function createUser(req, res) {
 
   try {
     let username = req.body.username
-    let user_designation = req.body.user_designation
-    let Userpassword = user_designation + '@123'
+    let pass = req.body.pass
+    let Userpassword = pass + '@123'
     let payLoad
     // console.log(user_email);
     const user = await Users_model.find({ username: username }) 
@@ -70,7 +70,7 @@ async function createUser(req, res) {
             from: 'vanshikabansal73@gmail.com',
             to:req.body.user_email,
             subject:'Your login details',
-            text:`Your login details for Campus Management System are as follows:: Username:${username} and password : ${Userpassword}`
+            text:`Your login details for Campus Management System are as follows::\n Username:${username} \n password : ${Userpassword}`
           }
           // if(data2)
           // {

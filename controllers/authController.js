@@ -5,10 +5,10 @@ import { json } from "express";
 async function authController(req, res) {
 
     try {
-        let userName = req.body.username;
+        let userEmail = req.body.user_email;
         let pass = req.body.user_password;
-        console.log(userName);
-    let user =await Users_model.findOne({ username: userName});
+        console.log("email",userEmail);
+    let user =await Users_model.findOne({user_email: userEmail});
     console.log(user, "user");
     if (!user) res.send("user not found");
     else{
@@ -18,7 +18,7 @@ async function authController(req, res) {
 
         if(com){
           let token= jwt.sign({user},process.env.secret_key);
-          res.status(200).json({token:token,username:user.username, designation:user.user_designation,user:user,dept:user.dept})
+          res.status(200).json({token:token,username:user.username, designation:user.role,user:user,dept:user.dept})
           console.log(token,"fgs");
           }
           else {

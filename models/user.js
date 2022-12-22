@@ -8,11 +8,13 @@ const Users_schema = mongoose.Schema({
     },
     user_img:{
         type:String,
+        required:true,
+        unique:true
     },
-    user_designation:{
+    role:{
         type:String,
         required:true,
-        enum:["Supervisor","Manager","Professor"],
+        enum:["Supervisor","Admin","Professor"],
     },
     dept:{
         type:String,
