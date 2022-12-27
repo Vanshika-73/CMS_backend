@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import Users_model from "../models/user.js";
-import { json } from "express";
 async function authController(req, res) {
 
     try {

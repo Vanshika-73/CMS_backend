@@ -44,13 +44,12 @@ async function getUser(req, res) {
 
 
 async function createUser(req, res) {
-
   try {
     let username = req.body.username
+    let userEmail = req.body.user_email
     let pass = req.body.pass
     let Userpassword = pass + '@123'
     let payLoad
-    // console.log(user_email);
     const user = await Users_model.find({ username: username }) 
     if (user?.length > 0) {
       res.status(500).json("user Exist")
@@ -70,12 +69,8 @@ async function createUser(req, res) {
             from: 'vanshikabansal73@gmail.com',
             to:req.body.user_email,
             subject:'Your login details',
-            text:`Your login details for Campus Management System are as follows::\n Username:${username} \n password : ${Userpassword}`
+            text:`Your login details for Campus Management System are as follows::\n Email: ${userEmail} \n password : ${Userpassword}`
           }
-          // if(data2)
-          // {
-              
-          // }
           transporter.sendMail(mailOptions,function(error,info){
             if(error){
               console.log(error.message);
