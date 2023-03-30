@@ -26,7 +26,7 @@ const Complaint_schema = mongoose.Schema({
         },
         wing:{
             type: String,
-            enum:['Civil','Electrical','Horticulture','Sanitation'],
+            enum:['Civil','Electrical','Horticulture','Sanitation','nature'],
             required:true,
         },
         wing_branch:{

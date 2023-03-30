@@ -33,7 +33,9 @@ const Users_schema = mongoose.Schema({
         type:String,
         required:true,
     },
-    
+    assignTo:{
+         type:String,
+    }
 })
 const Users_model=new mongoose.model('User', Users_schema);
 

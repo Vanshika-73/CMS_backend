@@ -2,6 +2,7 @@ import Users_model from '../models/user.js';
 import bcrypt from "bcrypt";
 import dotenv from 'dotenv';
 import nodemailer from 'nodemailer';
+import fileHelper from '../utils/file.js';
 let transporter = nodemailer.createTransport({
   service:'gmail',
   auth:{
@@ -44,32 +45,64 @@ async function getUser(req, res) {
 
 
 async function createUser(req, res) {
-  try {
-    let username = req.body.username
-    let userEmail = req.body.user_email
-    let pass = req.body.pass
-    let Userpassword = pass + '@123'
-    let payLoad
-    const user = await Users_model.find({ username: username }) 
-    if (user?.length > 0) {
-      res.status(500).json("user Exist")
+  console.log("req.body",req.file.filename);
+  let Userpassword = req.body.name + '@123'
+  const file = req.file.filename;
+  if (!file) {
+    return res
+      .status(208)
+      .json({ isError: true, title: "Error", message: "Image is not given" });
+  }
+  const cc = await Users_model.findOne({
+    user_email: req.body.email,
+  });
+  if (cc) {
+    if (req.file) {
+      const pathImg = "images/" + req.file.filename;
+      fileHelper(pathImg);
     }
-    else {
-      const saltRounds = 10;
-      bcrypt.hash(Userpassword, saltRounds, async function (err, hash) {
+    return res.status(208).json({
+      isError: true,
+      title: "Error",
+      message: `User already exists with this mail ${req.body.email}`,
+    });
+  }
+  const saltRounds = 10;
+  bcrypt.hash(Userpassword,saltRounds, async function(err,hash){
+    if(err){
+      res.status(208).json({
+        error:"error occured"
+      })
+    }
+    else{
+      const user = new Users_model({
+        username:req.body.name,
+        role:req.body.role,
+        user_img:file,
+        user_contact:req.body.phone,
+        user_email:req.body.email,
+        user_password:hash,
+      });
+      user.save((err,user)=>{
         if (err) {
-          res.send(err)
+          //err
+          console.log(err);
+          if (file) {
+            const pathImg = "images/" + file;
+            fileHelper(pathImg);
+          }
+          else{
+            return res.status(208).json({
+              isError:true,
+              message: "error occurd, not able to saved in db ",
+            });
+          }
         }
-        else {
-          console.log(hash);
-          payLoad = { ...req.body, user_password: hash }
-          console.log(payLoad);
-          let data2 = await Users_model.create(payLoad);
-          var mailOptions = {
-            from: 'vanshikabansal73@gmail.com',
-            to:req.body.user_email,
-            subject:'Your login details',
-            text:`Your login details for Campus Management System are as follows::\n Email: ${userEmail} \n password : ${Userpassword}`
+        var mailOptions = {
+          from: 'vanshikabansal73@gmail.com',
+          to:req.body.email,
+          subject:'SLIET Campus Management',
+          text:`Your login details for Campus Management System are as follows::\n Email: ${req.body.email} \n password : ${Userpassword}`
           }
           transporter.sendMail(mailOptions,function(error,info){
             if(error){
@@ -78,17 +111,16 @@ async function createUser(req, res) {
             else{
               console.log('email sent: ',info.response);
             }
-          })
-          res.status(200).json({ user: data2 });
-
-        }
-      });
-
+            })
+        return res.status(201).json({
+          isError: false,
+          title: "Success",
+          message: "User saved!",
+        });
+      })
     }
-  } catch (error) {
-    console.log("error:", error.message);
-    res.send(`eeror:${error.message}`);
-  }
+  })
+  
 }
 
 async function updateUser(req, res) {
@@ -108,7 +140,7 @@ async function updateUser(req, res) {
 
 async function deleteUser(req, res) {
   try {
-    let  username  = req.params
+    let  {username}  = req.params
     console.log(username);  
     let data2 = await Users_model.findOneAndDelete({username:username});
     console.log(data2);
