@@ -1,5 +1,5 @@
 import Complaint_model from "../models/complaint.js";
-import Counter_model from "../models/Counter.js";
+import Counter_model from "../models/counter.js";
 import Users_model from "../models/user.js";
 
 async function getComplaints(req, res) {
