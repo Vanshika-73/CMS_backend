@@ -18,7 +18,7 @@ const Users_schema = mongoose.Schema({
     },
     dept:{
         type:String,
-        enum:['Civil','Electrical','Horticulture','Sanitation'],
+        enum:['Civil','Electrical','Horticulture','Sanitation','dept'],
     },
     user_contact:{
         type:String,

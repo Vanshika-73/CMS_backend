@@ -46,9 +46,10 @@ async function getUser(req, res) {
 
 async function createUser(req, res) {
   console.log("req.body",req.file.filename);
-  let Userpassword = req.body.name + '@123'
+  console.log("user",req.body);
+  let Userpassword = req.body.password;
   const file = req.file.filename;
-  if (!file) {
+  if (!file) { 
     return res
       .status(208)
       .json({ isError: true, title: "Error", message: "Image is not given" });
@@ -81,6 +82,7 @@ async function createUser(req, res) {
         user_img:file,
         user_contact:req.body.phone,
         user_email:req.body.email,
+        dept:req.body.dept,
         user_password:hash,
       });
       user.save((err,user)=>{
