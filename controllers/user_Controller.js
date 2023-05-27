@@ -59,7 +59,7 @@ async function createUser(req, res) {
   });
   if (cc) {
     if (req.file) {
-      const pathImg = "images/" + req.file.filename;
+      const pathImg = "upload/" + req.file.filename;
       fileHelper(pathImg);
     }
     return res.status(208).json({
