@@ -9,7 +9,7 @@ Connect_db();
 App.use(express.json());
 App.use(cors());
 App.use("/users",user_routes);
-App.use(express.static('upload'))
+App.use("/userPhoto",express.static('upload'))
 App.use("/complaints", complaint_routes);
 App.use("/users/login",authRoute);
 const port =process.env.PORT;

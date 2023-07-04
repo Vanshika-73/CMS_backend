@@ -16,7 +16,6 @@ async function getComplaint(req, res) {
   try {
     let { cno } = req.params;
     const data2 = await Complaint_model.find({C_no:cno });
-    console.log(data2, "name");
     res.status(200).json(data2);
   } catch (error) {
     console.log("error:", error.message);
@@ -73,23 +72,20 @@ async function createComplaint(req, res) {
 //   }
 // }
 async function updateComplaintStatus(req, res) {
-  const status = req.body.status;
-  let { cno } = req.params;
-  console.log(cno)
-  console.log(status);
-  Complaint_model.updateOne({C_no: cno},{$set:{ complaint_status: status }}).then(
-    () => {
-      res.status(201).json({
-        message: 'Thing updated successfully!'
-      });
-    }
-  ).catch(
-    (error) => {
+    try {
+      const status = req.body.status;
+      let { cno } = req.params;
+      console.log("cno,",cno)
+      console.log("status",status);
+      const result = await Complaint_model.updateOne({C_no: cno},{$set:{ complaint_status: status }});
+      const data2 = await Complaint_model.find({C_no:cno });
+      console.log("resullyyyty",data2)
+      res.status(200).send(data2);
+    } catch (error) {
       res.status(400).json({
         error: error.message
       });
     }
-  );
 }
 
 async function deleteComplaint(req, res) {
