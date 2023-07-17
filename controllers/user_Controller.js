@@ -3,12 +3,18 @@ import bcrypt from "bcrypt";
 import dotenv from 'dotenv';
 import nodemailer from 'nodemailer';
 import fileHelper from '../utils/file.js';
+import cloudinary from 'cloudinary';
 let transporter = nodemailer.createTransport({
   service:'gmail',
   auth:{
     user:process.env.EMAIL_TEST,
     pass:process.env.EMAIL_TEST_APP_PSWD
   }
+});
+cloudinary.config({ 
+  cloud_name: process.env.Cloud_name, 
+  api_key: process.env.cloud_api, 
+  api_secret: process.env.api_secret 
 });
 async function getUsers(req, res) {
   try {
@@ -45,61 +51,70 @@ async function getUser(req, res) {
 
 
 async function createUser(req, res) {
-  console.log("req.body",req.file.filename);
+  console.log("req.body",req.files.userPhoto);
   console.log("user",req.body);
   let Userpassword = req.body.password;
-  const file = req.file.filename;
+  const file = req.files.userPhoto;
+  // if (!file) { 
+  //   return res
+  //     .status(208)
+  //     .json({ isError: true, title: "Error", message: "Image is not given" });
+  // }
+  // const file=req.file.filename;
   if (!file) { 
     return res
       .status(208)
-      .json({ isError: true, title: "Error", message: "Image is not given" });
-  }
-  const cc = await Users_model.findOne({
-    user_email: req.body.email,
-  });
-  if (cc) {
-    if (req.file) {
-      const pathImg = "upload/" + req.file.filename;
-      fileHelper(pathImg);
-    }
-    return res.status(208).json({
+         .json({ isError: true, title: "Error", message: "Image is not given" });
+   }
+    cloudinary.v2.uploader.upload(file.tempFilePath, 
+ async function(error, result) {
+    console.log("resssssss",result.secure_url);
+    if (error) return res.status(208).json({
       isError: true,
       title: "Error",
-      message: `User already exists with this mail ${req.body.email}`,
+      message: error,
     });
-  }
-  const saltRounds = 10;
-  bcrypt.hash(Userpassword,saltRounds, async function(err,hash){
-    if(err){
-      res.status(208).json({
-        error:"error occured"
+    else{
+    const cc = await Users_model.findOne({
+      user_email: req.body.email,
+    });
+    if (cc) {
+      return res.status(208).json({
+        isError: true,
+        title: "Error",
+        message: `User already exists with this mail ${req.body.email}`,
+      });
+    }
+    const saltRounds = 10;
+    bcrypt.hash(Userpassword,saltRounds, async function(err,hash){
+      if(err){
+        res.status(208).json({
+          error:"error occured"
+        })
+      }
+      else{
+        const user = new Users_model({
+          username:req.body.name,
+          role:req.body.role,
+          user_img:result.secure_url,
+          user_contact:req.body.phone,
+          user_email:req.body.email,
+          dept:req.body.dept,
+          user_password:hash,
+        });
+        user.save((err,user)=>{
+          if (err) {
+            console.log(err);
+              return res.status(208).json({
+                isError:true,
+                message: "error occurd, not able to saved in db ",
+              });
+            }
       })
     }
-    else{
-      const user = new Users_model({
-        username:req.body.name,
-        role:req.body.role,
-        user_img:file,
-        user_contact:req.body.phone,
-        user_email:req.body.email,
-        dept:req.body.dept,
-        user_password:hash,
-      });
-      user.save((err,user)=>{
-        if (err) {
-          //err
-          console.log(err);
-          if (file) {
-            const pathImg = "images/" + file;
-            fileHelper(pathImg);
-          }
-          else{
-            return res.status(208).json({
-              isError:true,
-              message: "error occurd, not able to saved in db ",
-            });
-          }
-        }
+});
+    // console.log("urrllll",img_url);
+        // }
         var mailOptions = {
           from: 'vanshikabansal73@gmail.com',
           to:req.body.email,
@@ -119,7 +134,7 @@ async function createUser(req, res) {
           title: "Success",
           message: "User saved!",
         });
-      })
+      
     }
   })
   
