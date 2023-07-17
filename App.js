@@ -5,21 +5,13 @@ import user_routes from './routes/user_route.js';
 import complaint_routes from './routes/complaint_route.js'
 import cors from 'cors';
 import fileUpload from 'express-fileupload';
-
 import authRoute from "./routes/authRoute.js";
 Connect_db();
 App.use(express.json());
 App.use(cors());
-App.use("/",
-  fileUpload({
-    useTempFiles: true,
-    tempFileDir: path.join(__dirname, "tmp"),
-    abortOnLimit:true,
-    preserveExtension:true,
-    safeFileNames:true,
-    limits: { fieldSize: 50 * 2024 * 1024 },
-  })
-);
+// App.use(
+//   fileUpload()
+// );
 App.use("/users",user_routes);
 // App.use("/userPhoto",express.static('upload'))
 App.use("/complaints", complaint_routes);
