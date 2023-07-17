@@ -10,7 +10,7 @@ import authRoute from "./routes/authRoute.js";
 Connect_db();
 App.use(express.json());
 App.use(cors());
-App.use(
+App.use("/",
   fileUpload({
     useTempFiles: true,
     tempFileDir: path.join(__dirname, "tmp"),
